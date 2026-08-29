@@ -6,11 +6,7 @@
 <title>BRAVE༒KINGS | Admin</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+*{box-sizing:border-box;margin:0;padding:0}
 
 body{
   font-family:Arial,sans-serif;
@@ -30,17 +26,14 @@ header{
   text-align:center;
 }
 
-header h1{
-  color:#ff6a00;
-}
+header h1{color:#ff6a00}
 
-.login,
-.dashboard{
+.login,.dashboard{
   max-width:1000px;
   margin:40px auto;
 }
 
-.box{
+.box,.application,.card{
   background:#111;
   border:1px solid #292929;
   border-radius:16px;
@@ -67,18 +60,14 @@ button{
   cursor:pointer;
 }
 
-.logout{
-  background:#333;
-}
+.logout{background:#333}
 
 .message{
   margin-top:15px;
   color:#ff8a00;
 }
 
-.dashboard{
-  display:none;
-}
+.dashboard{display:none}
 
 .topbar{
   display:flex;
@@ -97,27 +86,14 @@ button{
 }
 
 .card{
-  background:#111;
-  border:1px solid #292929;
-  border-radius:12px;
-  padding:20px;
   text-align:center;
 }
 
-.card h2{
-  color:#ff6a00;
-}
+.card h2{color:#ff6a00}
 
 .applications{
   display:grid;
   gap:18px;
-}
-
-.application{
-  background:#111;
-  border:1px solid #292929;
-  border-radius:15px;
-  padding:20px;
 }
 
 .application h3{
@@ -145,17 +121,12 @@ button{
   flex-wrap:wrap;
 }
 
-.approve{
-  background:#16803c;
-}
-
-.reject{
-  background:#a83232;
-}
+.approve{background:#16803c}
+.reject{background:#a83232}
 
 .screenshot{
-  max-width:250px;
-  max-height:250px;
+  max-width:300px;
+  max-height:300px;
   display:block;
   margin-top:15px;
   border-radius:10px;
@@ -169,18 +140,9 @@ button{
 }
 
 @media(max-width:700px){
-
-  .cards{
-    grid-template-columns:1fr;
-  }
-
-  .topbar{
-    align-items:stretch;
-  }
-
-  .topbar button{
-    width:100%;
-  }
+  .cards{grid-template-columns:1fr}
+  .topbar{align-items:stretch}
+  .topbar button{width:100%}
 }
 </style>
 </head>
@@ -193,8 +155,6 @@ button{
   </div>
 </header>
 
-
-<!-- LOGIN -->
 
 <div class="login" id="loginBox">
 
@@ -218,21 +178,14 @@ button{
       id="password"
       placeholder="Admin password">
 
-    <button onclick="login()">
-      LOGIN
-    </button>
+    <button onclick="login()">LOGIN</button>
 
-    <div
-      class="message"
-      id="loginMessage">
-    </div>
+    <div class="message" id="loginMessage"></div>
 
   </div>
 
 </div>
 
-
-<!-- DASHBOARD -->
 
 <div class="dashboard" id="dashboard">
 
@@ -243,15 +196,15 @@ button{
       <h2>Application Dashboard</h2>
 
       <div>
+
         <button onclick="loadApplications()">
           🔄 Refresh
         </button>
 
-        <button
-          class="logout"
-          onclick="logout()">
+        <button class="logout" onclick="logout()">
           Logout
         </button>
+
       </div>
 
     </div>
@@ -277,10 +230,7 @@ button{
     </div>
 
 
-    <div
-      class="applications"
-      id="applications">
-    </div>
+    <div class="applications" id="applications"></div>
 
   </div>
 
@@ -316,20 +266,13 @@ window.supabase.createClient(
 async function login(){
 
   const email =
-    document
-    .getElementById("email")
-    .value
-    .trim();
+    document.getElementById("email").value.trim();
 
   const password =
-    document
-    .getElementById("password")
-    .value;
-
+    document.getElementById("password").value;
 
   const message =
-    document
-    .getElementById("loginMessage");
+    document.getElementById("loginMessage");
 
 
   if(!email || !password){
@@ -342,13 +285,9 @@ async function login(){
 
 
   const { error } =
-    await supabaseClient
-    .auth
-    .signInWithPassword({
-
-      email:email,
-      password:password
-
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
     });
 
 
@@ -361,29 +300,54 @@ async function login(){
   }
 
 
-  showDashboard();
-
+  await showDashboard();
 }
 
 
 /* ================================
-   SHOW DASHBOARD
+   ADMIN CHECK
    ================================ */
 
 async function showDashboard(){
 
-  document
-    .getElementById("loginBox")
-    .style.display =
-    "none";
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
 
-  document
-    .getElementById("dashboard")
-    .style.display =
-    "block";
+
+  if(!user){
+
+    await logout();
+
+    return;
+  }
+
+
+  const { data: admin } =
+    await supabaseClient
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+
+  if(!admin){
+
+    alert("You are not authorized as an admin.");
+
+    await logout();
+
+    return;
+  }
+
+
+  document.getElementById("loginBox")
+    .style.display = "none";
+
+  document.getElementById("dashboard")
+    .style.display = "block";
+
 
   await loadApplications();
-
 }
 
 
@@ -393,21 +357,26 @@ async function showDashboard(){
 
 async function loadApplications(){
 
+  const container =
+    document.getElementById("applications");
+
+
+  container.innerHTML =
+    "<div class='empty'>Loading applications...</div>";
+
+
   const { data, error } =
     await supabaseClient
-    .from("applications")
-    .select("*")
-    .order("created_at", {
-      ascending:false
-    });
-
-
-  const container =
-    document
-    .getElementById("applications");
+      .from("applications")
+      .select("*")
+      .order("created_at", {
+        ascending:false
+      });
 
 
   if(error){
+
+    console.error(error);
 
     container.innerHTML =
       "<div class='empty'>" +
@@ -418,8 +387,7 @@ async function loadApplications(){
   }
 
 
-  const total =
-    data.length;
+  const total = data.length;
 
   const pending =
     data.filter(
@@ -432,20 +400,14 @@ async function loadApplications(){
     ).length;
 
 
-  document
-    .getElementById("total")
-    .textContent =
-    total;
+  document.getElementById("total")
+    .textContent = total;
 
-  document
-    .getElementById("pending")
-    .textContent =
-    pending;
+  document.getElementById("pending")
+    .textContent = pending;
 
-  document
-    .getElementById("approved")
-    .textContent =
-    approved;
+  document.getElementById("approved")
+    .textContent = approved;
 
 
   if(!data.length){
@@ -459,86 +421,128 @@ async function loadApplications(){
   }
 
 
-  container.innerHTML =
-    data.map(app => `
+  container.innerHTML = "";
 
-      <div class="application">
 
-        <h3>
-          ⚔️ ${escapeHtml(app.name)}
-        </h3>
+  for(const app of data){
 
-        <p>
-          <strong>Application ID:</strong>
-          ${escapeHtml(app.application_id)}
-        </p>
+    let screenshotHTML = "";
 
-        <p>
-          <strong>UID:</strong>
-          ${escapeHtml(app.uid)}
-        </p>
 
-        <p>
-          <strong>Contact:</strong>
-          ${escapeHtml(app.contact || "N/A")}
-        </p>
+    /* Generate secure screenshot URL */
 
-        <p>
-          <strong>Role:</strong>
-          ${escapeHtml(app.role || "N/A")}
-        </p>
+    if(app.screenshot_url){
 
-        <p>
-          <strong>Reason:</strong>
-          ${escapeHtml(app.reason || "N/A")}
-        </p>
+      const { data: signedData, error } =
+        await supabaseClient
+          .storage
+          .from("tryout-screenshots")
+          .createSignedUrl(
+            app.screenshot_url,
+            3600
+          );
 
-        <div class="status">
-          Status:
-          <strong>
-            ${escapeHtml(app.status || "Pending")}
-          </strong>
-        </div>
 
-        ${
-          app.screenshot_url
-          ?
-          `<p><strong>Screenshot:</strong></p>
-           <a
-             href="${escapeHtml(app.screenshot_url)}"
-             target="_blank">
-             View screenshot
-           </a>`
-          :
-          ""
-        }
+      if(!error && signedData){
 
-        <div class="actions">
+        screenshotHTML = `
+          <p><strong>Screenshot:</strong></p>
 
-          <button
-            class="approve"
-            onclick="updateStatus(
-              '${app.id}',
-              'Approved'
-            )">
-            ✅ Approve
-          </button>
+          <a
+            href="${escapeHtml(
+              signedData.signedUrl
+            )}"
+            target="_blank">
 
-          <button
-            class="reject"
-            onclick="updateStatus(
-              '${app.id}',
-              'Rejected'
-            )">
-            ❌ Reject
-          </button>
+            <img
+              class="screenshot"
+              src="${escapeHtml(
+                signedData.signedUrl
+              )}"
+              alt="Player screenshot">
 
-        </div>
+          </a>
+        `;
+      }
+    }
 
+
+    const div =
+      document.createElement("div");
+
+    div.className = "application";
+
+
+    div.innerHTML = `
+
+      <h3>
+        ⚔️ ${escapeHtml(app.name)}
+      </h3>
+
+      <p>
+        <strong>Application ID:</strong>
+        ${escapeHtml(app.application_id)}
+      </p>
+
+      <p>
+        <strong>UID:</strong>
+        ${escapeHtml(app.uid)}
+      </p>
+
+      <p>
+        <strong>Contact:</strong>
+        ${escapeHtml(app.contact || "N/A")}
+      </p>
+
+      <p>
+        <strong>Role:</strong>
+        ${escapeHtml(app.role || "N/A")}
+      </p>
+
+      <p>
+        <strong>Reason:</strong>
+        ${escapeHtml(app.reason || "N/A")}
+      </p>
+
+      <div class="status">
+        Status:
+        <strong>
+          ${escapeHtml(app.status || "Pending")}
+        </strong>
       </div>
 
-    `).join("");
+      ${screenshotHTML}
 
+      <div class="actions">
+
+        <button
+          class="approve"
+          onclick="updateStatus(
+            '${app.id}',
+            'Approved'
+          )">
+
+          ✅ Approve
+
+        </button>
+
+        <button
+          class="reject"
+          onclick="updateStatus(
+            '${app.id}',
+            'Rejected'
+          )">
+
+          ❌ Reject
+
+        </button>
+
+      </div>
+    `;
+
+
+    container.appendChild(div);
+  }
 }
 
 
@@ -546,21 +550,20 @@ async function loadApplications(){
    UPDATE STATUS
    ================================ */
 
-async function updateStatus(
-  id,
-  status
-){
+async function updateStatus(id,status){
 
   const { error } =
     await supabaseClient
-    .from("applications")
-    .update({
-      status:status
-    })
-    .eq("id", id);
+      .from("applications")
+      .update({
+        status:status
+      })
+      .eq("id",id);
 
 
   if(error){
+
+    console.error(error);
 
     alert(
       "Could not update application."
@@ -571,7 +574,6 @@ async function updateStatus(
 
 
   await loadApplications();
-
 }
 
 
@@ -586,12 +588,11 @@ async function logout(){
     .signOut();
 
   location.reload();
-
 }
 
 
 /* ================================
-   SECURITY
+   HTML SECURITY
    ================================ */
 
 function escapeHtml(value){
@@ -602,16 +603,14 @@ function escapeHtml(value){
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
-
 }
 
 
 /* ================================
-   CHECK EXISTING SESSION
+   EXISTING SESSION
    ================================ */
 
-supabaseClient
-  .auth
+supabaseClient.auth
   .getSession()
   .then(({data}) => {
 
