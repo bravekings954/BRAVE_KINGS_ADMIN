@@ -3,136 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BRAVE༒KINGS | Admin</title>
+<title>BRAVE༒KINGS | Admin Panel</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 body{
-  font-family:Arial,sans-serif;
+  font-family:Arial,Helvetica,sans-serif;
   background:#080808;
   color:#fff;
+}
+
+header{
+  background:#111;
+  border-bottom:1px solid #292929;
+  padding:22px 15px;
+  text-align:center;
+}
+
+header h1{
+  color:#ff6a00;
 }
 
 .container{
   width:92%;
   max-width:1100px;
-  margin:auto;
+  margin:30px auto;
 }
 
-header{
-  padding:25px 0;
-  border-bottom:1px solid #292929;
-  text-align:center;
-}
-
-header h1{color:#ff6a00}
-
-.login,.dashboard{
-  max-width:1000px;
-  margin:40px auto;
-}
-
-.box,.application,.card{
+.box{
   background:#111;
   border:1px solid #292929;
   border-radius:16px;
   padding:25px;
 }
 
+.login-box{
+  max-width:500px;
+  margin:60px auto;
+}
+
+h2{
+  margin-bottom:20px;
+}
+
+label{
+  display:block;
+  margin:12px 0 6px;
+  color:#ddd;
+  font-weight:bold;
+}
+
 input{
   width:100%;
   padding:13px;
-  margin:8px 0 15px;
   border-radius:8px;
   border:1px solid #333;
   background:#191919;
   color:#fff;
+  outline:none;
+}
+
+input:focus{
+  border-color:#ff6a00;
 }
 
 button{
-  padding:12px 18px;
   border:0;
   border-radius:8px;
+  padding:12px 18px;
   background:#ff6a00;
   color:#fff;
   font-weight:bold;
   cursor:pointer;
 }
 
-.logout{background:#333}
-
-.message{
-  margin-top:15px;
-  color:#ff8a00;
+button:disabled{
+  opacity:.6;
 }
 
-.dashboard{display:none}
+.login-button{
+  width:100%;
+  margin-top:20px;
+}
+
+.error{
+  color:#ff6a00;
+  margin-top:15px;
+  line-height:1.5;
+}
+
+.dashboard{
+  display:none;
+}
 
 .topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:15px;
-  margin-bottom:25px;
   flex-wrap:wrap;
+  margin-bottom:25px;
 }
 
-.cards{
+.logout{
+  background:#333;
+}
+
+.stats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:15px;
   margin-bottom:25px;
 }
 
-.card{
+.stat{
+  background:#111;
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:20px;
   text-align:center;
 }
 
-.card h2{color:#ff6a00}
+.stat-number{
+  color:#ff6a00;
+  font-size:30px;
+  font-weight:bold;
+}
 
 .applications{
   display:grid;
   gap:18px;
 }
 
+.application{
+  background:#111;
+  border:1px solid #292929;
+  border-radius:16px;
+  padding:22px;
+}
+
 .application h3{
   color:#ff8a00;
-  margin-bottom:12px;
+  margin-bottom:15px;
 }
 
 .application p{
-  margin:6px 0;
   color:#ccc;
+  margin:7px 0;
+  word-break:break-word;
 }
 
 .status{
   display:inline-block;
-  padding:6px 10px;
-  border-radius:7px;
   background:#222;
-  margin:10px 0;
+  border-radius:7px;
+  padding:7px 10px;
+  margin:12px 0;
 }
 
 .actions{
   display:flex;
   gap:10px;
-  margin-top:15px;
   flex-wrap:wrap;
+  margin-top:18px;
 }
 
-.approve{background:#16803c}
-.reject{background:#a83232}
+.approve{
+  background:#16803c;
+}
+
+.reject{
+  background:#a83232;
+}
 
 .screenshot{
-  max-width:300px;
-  max-height:300px;
   display:block;
-  margin-top:15px;
+  max-width:320px;
+  max-height:320px;
+  margin-top:12px;
   border-radius:10px;
   border:1px solid #333;
 }
 
+.loading,
 .empty{
   text-align:center;
   color:#888;
@@ -140,9 +200,18 @@ button{
 }
 
 @media(max-width:700px){
-  .cards{grid-template-columns:1fr}
-  .topbar{align-items:stretch}
-  .topbar button{width:100%}
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .topbar{
+    align-items:stretch;
+  }
+
+  .topbar button{
+    width:100%;
+  }
 }
 </style>
 </head>
@@ -150,50 +219,71 @@ button{
 <body>
 
 <header>
-  <div class="container">
-    <h1>⚔️ BRAVE༒KINGS ADMIN</h1>
-  </div>
+  <h1>⚔️ BRAVE༒KINGS ADMIN</h1>
 </header>
 
 
-<div class="login" id="loginBox">
+<!-- LOGIN -->
 
-  <div class="box">
+<div class="container" id="loginSection">
 
-    <h2>Admin Login</h2>
+  <div class="box login-box">
 
-    <br>
+    <h2>👑 Admin Login</h2>
 
-    <label>Email</label>
+    <label for="email">
+      Email
+    </label>
 
     <input
-      type="email"
       id="email"
+      type="email"
+      autocomplete="username"
       placeholder="Admin email">
 
-    <label>Password</label>
+
+    <label for="password">
+      Password
+    </label>
 
     <input
-      type="password"
       id="password"
+      type="password"
+      autocomplete="current-password"
       placeholder="Admin password">
 
-    <button onclick="login()">LOGIN</button>
 
-    <div class="message" id="loginMessage"></div>
+    <button
+      id="loginButton"
+      class="login-button"
+      onclick="login()">
+
+      LOGIN
+
+    </button>
+
+
+    <div
+      id="loginError"
+      class="error">
+    </div>
 
   </div>
 
 </div>
 
 
-<div class="dashboard" id="dashboard">
+<!-- DASHBOARD -->
+
+<div
+  class="dashboard"
+  id="dashboard">
 
   <div class="container">
 
     <div class="topbar">
 
-      <h2>Application Dashboard</h2>
+      <h2>📋 Applications</h2>
 
       <div>
 
@@ -201,8 +291,12 @@ button{
           🔄 Refresh
         </button>
 
-        <button class="logout" onclick="logout()">
+        <button
+          class="logout"
+          onclick="logout()">
+
           Logout
+
         </button>
 
       </div>
@@ -210,40 +304,71 @@ button{
     </div>
 
 
-    <div class="cards">
+    <div class="stats">
 
-      <div class="card">
-        <h2 id="total">0</h2>
+      <div class="stat">
+
+        <div
+          class="stat-number"
+          id="total">
+
+          0
+
+        </div>
+
         <p>Total</p>
+
       </div>
 
-      <div class="card">
-        <h2 id="pending">0</h2>
+
+      <div class="stat">
+
+        <div
+          class="stat-number"
+          id="pending">
+
+          0
+
+        </div>
+
         <p>Pending</p>
+
       </div>
 
-      <div class="card">
-        <h2 id="approved">0</h2>
+
+      <div class="stat">
+
+        <div
+          class="stat-number"
+          id="approved">
+
+          0
+
+        </div>
+
         <p>Approved</p>
+
       </div>
 
     </div>
 
 
-    <div class="applications" id="applications"></div>
+    <div
+      class="applications"
+      id="applications">
+
+    </div>
 
   </div>
 
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 
-/* ================================
-   SUPABASE SETTINGS
-   ================================ */
+/* =========================================
+   SUPABASE CONNECTION
+   ========================================= */
 
 const SUPABASE_URL =
 "https://enhoicmhdhwksgwlveou.supabase.co/rest/v1/";
@@ -259,117 +384,219 @@ window.supabase.createClient(
 );
 
 
-/* ================================
+/* =========================================
    LOGIN
-   ================================ */
+   ========================================= */
 
 async function login(){
 
   const email =
-    document.getElementById("email").value.trim();
+    document
+      .getElementById("email")
+      .value
+      .trim();
 
   const password =
-    document.getElementById("password").value;
+    document
+      .getElementById("password")
+      .value;
 
-  const message =
-    document.getElementById("loginMessage");
+  const errorBox =
+    document
+      .getElementById("loginError");
+
+  const button =
+    document
+      .getElementById("loginButton");
+
+
+  errorBox.textContent = "";
 
 
   if(!email || !password){
 
-    message.textContent =
+    errorBox.textContent =
       "Please enter your email and password.";
 
     return;
   }
 
 
-  const { error } =
+  button.disabled = true;
+  button.textContent = "LOGGING IN...";
+
+
+  const { data, error } =
     await supabaseClient.auth.signInWithPassword({
-      email,
-      password
+
+      email:email,
+
+      password:password
+
     });
 
 
   if(error){
 
-    message.textContent =
-      "Login failed. Check your details.";
+    console.error(error);
+
+    errorBox.textContent =
+      "Supabase says: " +
+      error.message;
+
+    button.disabled = false;
+    button.textContent = "LOGIN";
 
     return;
   }
 
 
-  await showDashboard();
+  if(!data.user){
+
+    errorBox.textContent =
+      "Login completed, but no user was returned.";
+
+    button.disabled = false;
+    button.textContent = "LOGIN";
+
+    return;
+  }
+
+
+  await checkAdmin();
+
+
+  button.disabled = false;
+  button.textContent = "LOGIN";
 }
 
 
-/* ================================
-   ADMIN CHECK
-   ================================ */
+/* =========================================
+   CHECK ADMIN
+   ========================================= */
 
-async function showDashboard(){
+async function checkAdmin(){
 
-  const { data: { user } } =
+  const {
+    data: { user }
+  } =
     await supabaseClient.auth.getUser();
 
 
   if(!user){
 
-    await logout();
+    showLogin();
 
-    return;
+    return false;
   }
 
 
-  const { data: admin } =
+  const { data: admin, error } =
     await supabaseClient
       .from("admins")
       .select("user_id")
-      .eq("user_id", user.id)
+      .eq("user_id",user.id)
       .maybeSingle();
+
+
+  if(error){
+
+    console.error(error);
+
+    alert(
+      "Admin check failed: " +
+      error.message
+    );
+
+    await supabaseClient.auth.signOut();
+
+    showLogin();
+
+    return false;
+  }
 
 
   if(!admin){
 
-    alert("You are not authorized as an admin.");
+    alert(
+      "This account is not registered as a BRAVE༒KINGS admin."
+    );
 
-    await logout();
+    await supabaseClient.auth.signOut();
 
-    return;
+    showLogin();
+
+    return false;
   }
 
 
-  document.getElementById("loginBox")
-    .style.display = "none";
+  showDashboard();
 
-  document.getElementById("dashboard")
-    .style.display = "block";
+  return true;
+}
+
+
+/* =========================================
+   SHOW LOGIN
+   ========================================= */
+
+function showLogin(){
+
+  document
+    .getElementById("loginSection")
+    .style.display =
+    "block";
+
+  document
+    .getElementById("dashboard")
+    .style.display =
+    "none";
+}
+
+
+/* =========================================
+   SHOW DASHBOARD
+   ========================================= */
+
+async function showDashboard(){
+
+  document
+    .getElementById("loginSection")
+    .style.display =
+    "none";
+
+  document
+    .getElementById("dashboard")
+    .style.display =
+    "block";
 
 
   await loadApplications();
 }
 
 
-/* ================================
+/* =========================================
    LOAD APPLICATIONS
-   ================================ */
+   ========================================= */
 
 async function loadApplications(){
 
   const container =
-    document.getElementById("applications");
+    document
+      .getElementById("applications");
 
 
   container.innerHTML =
-    "<div class='empty'>Loading applications...</div>";
+    "<div class='loading'>" +
+    "Loading applications..." +
+    "</div>";
 
 
   const { data, error } =
     await supabaseClient
       .from("applications")
       .select("*")
-      .order("created_at", {
+      .order("created_at",{
         ascending:false
       });
 
@@ -380,34 +607,46 @@ async function loadApplications(){
 
     container.innerHTML =
       "<div class='empty'>" +
-      "Could not load applications." +
+      "Could not load applications.<br><br>" +
+      escapeHtml(error.message) +
       "</div>";
 
     return;
   }
 
 
-  const total = data.length;
+  const total =
+    data.length;
+
 
   const pending =
     data.filter(
-      a => a.status === "Pending"
+      item => item.status === "Pending"
     ).length;
+
 
   const approved =
     data.filter(
-      a => a.status === "Approved"
+      item => item.status === "Approved"
     ).length;
 
 
-  document.getElementById("total")
-    .textContent = total;
+  document
+    .getElementById("total")
+    .textContent =
+    total;
 
-  document.getElementById("pending")
-    .textContent = pending;
 
-  document.getElementById("approved")
-    .textContent = approved;
+  document
+    .getElementById("pending")
+    .textContent =
+    pending;
+
+
+  document
+    .getElementById("approved")
+    .textContent =
+    approved;
 
 
   if(!data.length){
@@ -429,128 +668,151 @@ async function loadApplications(){
     let screenshotHTML = "";
 
 
-    /* Generate secure screenshot URL */
-
     if(app.screenshot_url){
 
-      const { data: signedData, error } =
-        await supabaseClient
-          .storage
-          .from("tryout-screenshots")
-          .createSignedUrl(
-            app.screenshot_url,
-            3600
-          );
+      const {
+        data: signedData,
+        error: signedError
+      } =
+      await supabaseClient
+        .storage
+        .from("tryout-screenshots")
+        .createSignedUrl(
+          app.screenshot_url,
+          3600
+        );
 
 
-      if(!error && signedData){
+      if(!signedError && signedData){
+
+        const imageUrl =
+          signedData.signedUrl;
+
 
         screenshotHTML = `
-          <p><strong>Screenshot:</strong></p>
+
+          <p>
+            <strong>Profile Screenshot:</strong>
+          </p>
 
           <a
-            href="${escapeHtml(
-              signedData.signedUrl
-            )}"
+            href="${escapeHtml(imageUrl)}"
             target="_blank">
 
             <img
               class="screenshot"
-              src="${escapeHtml(
-                signedData.signedUrl
-              )}"
+              src="${escapeHtml(imageUrl)}"
               alt="Player screenshot">
 
           </a>
+
         `;
       }
     }
 
 
-    const div =
+    const card =
       document.createElement("div");
 
-    div.className = "application";
+
+    card.className =
+      "application";
 
 
-    div.innerHTML = `
+    card.innerHTML = `
 
       <h3>
-        ⚔️ ${escapeHtml(app.name)}
+        ⚔️ ${escapeHtml(app.name || "Unknown")}
       </h3>
+
 
       <p>
         <strong>Application ID:</strong>
-        ${escapeHtml(app.application_id)}
+        ${escapeHtml(app.application_id || "N/A")}
       </p>
+
 
       <p>
         <strong>UID:</strong>
-        ${escapeHtml(app.uid)}
+        ${escapeHtml(app.uid || "N/A")}
       </p>
+
 
       <p>
         <strong>Contact:</strong>
         ${escapeHtml(app.contact || "N/A")}
       </p>
 
+
       <p>
         <strong>Role:</strong>
         ${escapeHtml(app.role || "N/A")}
       </p>
+
 
       <p>
         <strong>Reason:</strong>
         ${escapeHtml(app.reason || "N/A")}
       </p>
 
+
       <div class="status">
+
         Status:
         <strong>
           ${escapeHtml(app.status || "Pending")}
         </strong>
+
       </div>
 
+
       ${screenshotHTML}
+
 
       <div class="actions">
 
         <button
           class="approve"
           onclick="updateStatus(
-            '${app.id}',
+            '${escapeHtml(app.id)}',
             'Approved'
           )">
 
-          ✅ Approve
+          ✅ APPROVE
 
         </button>
+
 
         <button
           class="reject"
           onclick="updateStatus(
-            '${app.id}',
+            '${escapeHtml(app.id)}',
             'Rejected'
           )">
 
-          ❌ Reject
+          ❌ REJECT
 
         </button>
 
       </div>
+
     `;
 
 
-    container.appendChild(div);
+    container.appendChild(card);
+
   }
 }
 
 
-/* ================================
+/* =========================================
    UPDATE STATUS
-   ================================ */
+   ========================================= */
 
-async function updateStatus(id,status){
+async function updateStatus(
+  id,
+  status
+){
 
   const { error } =
     await supabaseClient
@@ -566,7 +828,8 @@ async function updateStatus(id,status){
     console.error(error);
 
     alert(
-      "Could not update application."
+      "Could not update application:\n\n" +
+      error.message
     );
 
     return;
@@ -577,9 +840,9 @@ async function updateStatus(id,status){
 }
 
 
-/* ================================
+/* =========================================
    LOGOUT
-   ================================ */
+   ========================================= */
 
 async function logout(){
 
@@ -587,13 +850,13 @@ async function logout(){
     .auth
     .signOut();
 
-  location.reload();
+  showLogin();
 }
 
 
-/* ================================
-   HTML SECURITY
-   ================================ */
+/* =========================================
+   ESCAPE HTML
+   ========================================= */
 
 function escapeHtml(value){
 
@@ -606,17 +869,21 @@ function escapeHtml(value){
 }
 
 
-/* ================================
-   EXISTING SESSION
-   ================================ */
+/* =========================================
+   CHECK EXISTING SESSION
+   ========================================= */
 
 supabaseClient.auth
   .getSession()
-  .then(({data}) => {
+  .then(async ({data}) => {
 
     if(data.session){
 
-      showDashboard();
+      await checkAdmin();
+
+    }else{
+
+      showLogin();
 
     }
 
