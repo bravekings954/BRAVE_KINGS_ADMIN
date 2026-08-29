@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>BRAVE༒KINGS | Admin Panel</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -224,9 +223,7 @@ button:disabled{
 </header>
 
 
-<!-- =========================
-     LOGIN
-========================= -->
+<!-- LOGIN -->
 
 <div
   class="container"
@@ -235,7 +232,6 @@ button:disabled{
   <div class="box login-box">
 
     <h2>👑 Admin Login</h2>
-
 
     <label for="email">
       Email
@@ -248,7 +244,6 @@ button:disabled{
       placeholder="Admin email"
     >
 
-
     <label for="password">
       Password
     </label>
@@ -260,7 +255,6 @@ button:disabled{
       placeholder="Admin password"
     >
 
-
     <button
       id="loginButton"
       class="login-button"
@@ -269,7 +263,6 @@ button:disabled{
       LOGIN
 
     </button>
-
 
     <div
       id="loginError"
@@ -281,9 +274,7 @@ button:disabled{
 </div>
 
 
-<!-- =========================
-     DASHBOARD
-========================= -->
+<!-- DASHBOARD -->
 
 <div
   class="dashboard"
@@ -297,7 +288,6 @@ button:disabled{
         📋 Applications
       </h2>
 
-
       <div>
 
         <button
@@ -306,7 +296,6 @@ button:disabled{
           🔄 Refresh
 
         </button>
-
 
         <button
           class="logout"
@@ -320,8 +309,6 @@ button:disabled{
 
     </div>
 
-
-    <!-- STATS -->
 
     <div class="stats">
 
@@ -372,8 +359,6 @@ button:disabled{
     </div>
 
 
-    <!-- APPLICATION LIST -->
-
     <div
       class="applications"
       id="applications">
@@ -387,9 +372,9 @@ button:disabled{
 
 <script>
 
-/* =====================================================
+/* =========================================
    SUPABASE CONNECTION
-===================================================== */
+========================================= */
 
 const SUPABASE_URL =
 "https://enhoicmhdhwksgwlveou.supabase.co";
@@ -406,9 +391,9 @@ window.supabase.createClient(
 );
 
 
-/* =====================================================
+/* =========================================
    LOGIN
-===================================================== */
+========================================= */
 
 async function login(){
 
@@ -509,14 +494,15 @@ async function login(){
 }
 
 
-/* =====================================================
-   CHECK ADMIN USING EMAIL
-===================================================== */
+/* =========================================
+   CHECK ADMIN
+   USING USER_ID
+========================================= */
 
 async function checkAdmin(){
 
   const {
-    data: {
+    data:{
       user
     }
   } =
@@ -534,10 +520,17 @@ async function checkAdmin(){
 
 
   /*
-     IMPORTANT:
-     The admins table uses EMAIL,
-     so we check the logged-in user's
-     email against admins.email.
+    IMPORTANT:
+
+    Your public.admins table has a
+    user_id column connected to
+    auth.users.id.
+
+    Therefore we compare:
+
+    admins.user_id
+    with
+    user.id
   */
 
   const {
@@ -547,13 +540,14 @@ async function checkAdmin(){
   await supabaseClient
     .from("admins")
     .select("*")
-    .eq("email",user.email)
+    .eq("user_id",user.id)
     .maybeSingle();
 
 
   if(error){
 
     console.error(error);
+
 
     alert(
       "Admin check failed:\n\n" +
@@ -596,9 +590,9 @@ async function checkAdmin(){
 }
 
 
-/* =====================================================
+/* =========================================
    SHOW LOGIN
-===================================================== */
+========================================= */
 
 function showLogin(){
 
@@ -615,9 +609,9 @@ function showLogin(){
 }
 
 
-/* =====================================================
+/* =========================================
    SHOW DASHBOARD
-===================================================== */
+========================================= */
 
 async function showDashboard(){
 
@@ -637,9 +631,9 @@ async function showDashboard(){
 }
 
 
-/* =====================================================
+/* =========================================
    LOAD APPLICATIONS
-===================================================== */
+========================================= */
 
 async function loadApplications(){
 
@@ -744,11 +738,6 @@ async function loadApplications(){
 
     let screenshotHTML = "";
 
-
-    /*
-       Show screenshot if the application
-       contains a screenshot path.
-    */
 
     if(app.screenshot_url){
 
@@ -987,9 +976,9 @@ async function loadApplications(){
 }
 
 
-/* =====================================================
-   UPDATE APPLICATION STATUS
-===================================================== */
+/* =========================================
+   UPDATE STATUS
+========================================= */
 
 async function updateStatus(
   id,
@@ -1029,9 +1018,9 @@ async function updateStatus(
 }
 
 
-/* =====================================================
+/* =========================================
    LOGOUT
-===================================================== */
+========================================= */
 
 async function logout(){
 
@@ -1044,9 +1033,9 @@ async function logout(){
 }
 
 
-/* =====================================================
+/* =========================================
    ESCAPE HTML
-===================================================== */
+========================================= */
 
 function escapeHtml(value){
 
@@ -1074,9 +1063,9 @@ function escapeHtml(value){
 }
 
 
-/* =====================================================
+/* =========================================
    CHECK EXISTING SESSION
-===================================================== */
+========================================= */
 
 supabaseClient
   .auth
