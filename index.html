@@ -3,12 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>BRAVE༒KINGS | Admin Panel</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 body{
   font-family:Arial,Helvetica,sans-serif;
@@ -17,13 +22,15 @@ body{
 }
 
 header{
-  padding:25px 15px;
-  text-align:center;
   background:#111;
   border-bottom:1px solid #292929;
+  padding:25px 15px;
+  text-align:center;
 }
 
-header h1{color:#ff6a00}
+header h1{
+  color:#ff6a00;
+}
 
 .container{
   width:92%;
@@ -43,7 +50,9 @@ header h1{color:#ff6a00}
   margin:60px auto;
 }
 
-h2{margin-bottom:20px}
+h2{
+  margin-bottom:20px;
+}
 
 label{
   display:block;
@@ -62,7 +71,9 @@ input{
   outline:none;
 }
 
-input:focus{border-color:#ff6a00}
+input:focus{
+  border-color:#ff6a00;
+}
 
 button{
   border:0;
@@ -74,7 +85,9 @@ button{
   cursor:pointer;
 }
 
-button:disabled{opacity:.6}
+button:disabled{
+  opacity:.6;
+}
 
 .login-button{
   width:100%;
@@ -87,7 +100,9 @@ button:disabled{opacity:.6}
   line-height:1.5;
 }
 
-.dashboard{display:none}
+.dashboard{
+  display:none;
+}
 
 .topbar{
   display:flex;
@@ -98,7 +113,9 @@ button:disabled{opacity:.6}
   margin-bottom:25px;
 }
 
-.logout{background:#333}
+.logout{
+  background:#333;
+}
 
 .stats{
   display:grid;
@@ -159,8 +176,13 @@ button:disabled{opacity:.6}
   margin-top:18px;
 }
 
-.approve{background:#16803c}
-.reject{background:#a83232}
+.approve{
+  background:#16803c;
+}
+
+.reject{
+  background:#a83232;
+}
 
 .screenshot{
   display:block;
@@ -179,11 +201,18 @@ button:disabled{opacity:.6}
 }
 
 @media(max-width:700px){
-  .stats{grid-template-columns:1fr}
 
-  .topbar{align-items:stretch}
+  .stats{
+    grid-template-columns:1fr;
+  }
 
-  .topbar button{width:100%}
+  .topbar{
+    align-items:stretch;
+  }
+
+  .topbar button{
+    width:100%;
+  }
 }
 </style>
 </head>
@@ -195,15 +224,22 @@ button:disabled{opacity:.6}
 </header>
 
 
-<!-- LOGIN -->
+<!-- =========================
+     LOGIN
+========================= -->
 
-<div class="container" id="loginSection">
+<div
+  class="container"
+  id="loginSection">
 
   <div class="box login-box">
 
     <h2>👑 Admin Login</h2>
 
-    <label for="email">Email</label>
+
+    <label for="email">
+      Email
+    </label>
 
     <input
       id="email"
@@ -212,7 +248,10 @@ button:disabled{opacity:.6}
       placeholder="Admin email"
     >
 
-    <label for="password">Password</label>
+
+    <label for="password">
+      Password
+    </label>
 
     <input
       id="password"
@@ -220,6 +259,7 @@ button:disabled{opacity:.6}
       autocomplete="current-password"
       placeholder="Admin password"
     >
+
 
     <button
       id="loginButton"
@@ -230,28 +270,43 @@ button:disabled{opacity:.6}
 
     </button>
 
-    <div id="loginError" class="error"></div>
+
+    <div
+      id="loginError"
+      class="error">
+    </div>
 
   </div>
 
 </div>
 
 
-<!-- DASHBOARD -->
+<!-- =========================
+     DASHBOARD
+========================= -->
 
-<div class="dashboard" id="dashboard">
+<div
+  class="dashboard"
+  id="dashboard">
 
   <div class="container">
 
     <div class="topbar">
 
-      <h2>📋 Applications</h2>
+      <h2>
+        📋 Applications
+      </h2>
+
 
       <div>
 
-        <button onclick="loadApplications()">
+        <button
+          onclick="loadApplications()">
+
           🔄 Refresh
+
         </button>
+
 
         <button
           class="logout"
@@ -266,29 +321,63 @@ button:disabled{opacity:.6}
     </div>
 
 
+    <!-- STATS -->
+
     <div class="stats">
 
       <div class="stat">
-        <div class="stat-number" id="total">0</div>
+
+        <div
+          class="stat-number"
+          id="total">
+
+          0
+
+        </div>
+
         <p>Total</p>
+
       </div>
 
+
       <div class="stat">
-        <div class="stat-number" id="pending">0</div>
+
+        <div
+          class="stat-number"
+          id="pending">
+
+          0
+
+        </div>
+
         <p>Pending</p>
+
       </div>
 
+
       <div class="stat">
-        <div class="stat-number" id="approved">0</div>
+
+        <div
+          class="stat-number"
+          id="approved">
+
+          0
+
+        </div>
+
         <p>Approved</p>
+
       </div>
 
     </div>
 
 
+    <!-- APPLICATION LIST -->
+
     <div
       class="applications"
       id="applications">
+
     </div>
 
   </div>
@@ -298,15 +387,17 @@ button:disabled{opacity:.6}
 
 <script>
 
-/* =========================================
+/* =====================================================
    SUPABASE CONNECTION
-   ========================================= */
+===================================================== */
 
 const SUPABASE_URL =
 "https://enhoicmhdhwksgwlveou.supabase.co";
 
+
 const SUPABASE_KEY =
 "sb_publishable_FhqemTWZw6K5w-vO6bze8g_-hm117f-";
+
 
 const supabaseClient =
 window.supabase.createClient(
@@ -315,25 +406,37 @@ window.supabase.createClient(
 );
 
 
-/* =========================================
+/* =====================================================
    LOGIN
-   ========================================= */
+===================================================== */
 
 async function login(){
 
   const email =
-    document.getElementById("email").value.trim();
+    document
+      .getElementById("email")
+      .value
+      .trim();
+
 
   const password =
-    document.getElementById("password").value;
+    document
+      .getElementById("password")
+      .value;
+
 
   const errorBox =
-    document.getElementById("loginError");
+    document
+      .getElementById("loginError");
+
 
   const button =
-    document.getElementById("loginButton");
+    document
+      .getElementById("loginButton");
+
 
   errorBox.textContent = "";
+
 
   if(!email || !password){
 
@@ -343,16 +446,27 @@ async function login(){
     return;
   }
 
+
   button.disabled = true;
-  button.textContent = "LOGGING IN...";
 
-  const { data, error } =
-    await supabaseClient.auth.signInWithPassword({
+  button.textContent =
+    "LOGGING IN...";
 
-      email: email,
-      password: password
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .auth
+    .signInWithPassword({
+
+      email:email,
+
+      password:password
 
     });
+
 
   if(error){
 
@@ -363,10 +477,13 @@ async function login(){
       error.message;
 
     button.disabled = false;
-    button.textContent = "LOGIN";
+
+    button.textContent =
+      "LOGIN";
 
     return;
   }
+
 
   if(!data.user){
 
@@ -374,57 +491,86 @@ async function login(){
       "Login completed, but no user was returned.";
 
     button.disabled = false;
-    button.textContent = "LOGIN";
+
+    button.textContent =
+      "LOGIN";
 
     return;
   }
 
+
   await checkAdmin();
 
+
   button.disabled = false;
-  button.textContent = "LOGIN";
+
+  button.textContent =
+    "LOGIN";
 }
 
 
-/* =========================================
-   CHECK ADMIN
-   ========================================= */
+/* =====================================================
+   CHECK ADMIN USING EMAIL
+===================================================== */
 
 async function checkAdmin(){
 
   const {
-    data: { user }
+    data: {
+      user
+    }
   } =
-    await supabaseClient.auth.getUser();
+  await supabaseClient
+    .auth
+    .getUser();
+
 
   if(!user){
 
     showLogin();
+
     return false;
   }
 
-  const { data: admin, error } =
-    await supabaseClient
-      .from("admins")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
+
+  /*
+     IMPORTANT:
+     The admins table uses EMAIL,
+     so we check the logged-in user's
+     email against admins.email.
+  */
+
+  const {
+    data:admin,
+    error
+  } =
+  await supabaseClient
+    .from("admins")
+    .select("*")
+    .eq("email",user.email)
+    .maybeSingle();
+
 
   if(error){
 
     console.error(error);
 
     alert(
-      "Admin check failed: " +
+      "Admin check failed:\n\n" +
       error.message
     );
 
-    await supabaseClient.auth.signOut();
+
+    await supabaseClient
+      .auth
+      .signOut();
+
 
     showLogin();
 
     return false;
   }
+
 
   if(!admin){
 
@@ -432,12 +578,17 @@ async function checkAdmin(){
       "This account is not registered as a BRAVE༒KINGS admin."
     );
 
-    await supabaseClient.auth.signOut();
+
+    await supabaseClient
+      .auth
+      .signOut();
+
 
     showLogin();
 
     return false;
   }
+
 
   showDashboard();
 
@@ -445,65 +596,83 @@ async function checkAdmin(){
 }
 
 
-/* =========================================
+/* =====================================================
    SHOW LOGIN
-   ========================================= */
+===================================================== */
 
 function showLogin(){
 
   document
     .getElementById("loginSection")
-    .style.display = "block";
+    .style.display =
+    "block";
+
 
   document
     .getElementById("dashboard")
-    .style.display = "none";
+    .style.display =
+    "none";
 }
 
 
-/* =========================================
+/* =====================================================
    SHOW DASHBOARD
-   ========================================= */
+===================================================== */
 
 async function showDashboard(){
 
   document
     .getElementById("loginSection")
-    .style.display = "none";
+    .style.display =
+    "none";
+
 
   document
     .getElementById("dashboard")
-    .style.display = "block";
+    .style.display =
+    "block";
+
 
   await loadApplications();
 }
 
 
-/* =========================================
+/* =====================================================
    LOAD APPLICATIONS
-   ========================================= */
+===================================================== */
 
 async function loadApplications(){
 
   const container =
-    document.getElementById("applications");
+    document
+      .getElementById("applications");
+
 
   container.innerHTML =
     "<div class='loading'>" +
     "Loading applications..." +
     "</div>";
 
-  const { data, error } =
-    await supabaseClient
-      .from("applications")
-      .select("*")
-      .order("created_at", {
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("applications")
+    .select("*")
+    .order(
+      "created_at",
+      {
         ascending:false
-      });
+      }
+    );
+
 
   if(error){
 
     console.error(error);
+
 
     container.innerHTML =
       "<div class='empty'>" +
@@ -511,28 +680,50 @@ async function loadApplications(){
       escapeHtml(error.message) +
       "</div>";
 
+
     return;
   }
 
-  const total = data.length;
+
+  const total =
+    data.length;
+
 
   const pending =
     data.filter(
       item =>
         (item.status || "Pending")
-        .toLowerCase() === "pending"
+          .toLowerCase() ===
+        "pending"
     ).length;
+
 
   const approved =
     data.filter(
       item =>
         (item.status || "")
-        .toLowerCase() === "approved"
+          .toLowerCase() ===
+        "approved"
     ).length;
 
-  document.getElementById("total").textContent = total;
-  document.getElementById("pending").textContent = pending;
-  document.getElementById("approved").textContent = approved;
+
+  document
+    .getElementById("total")
+    .textContent =
+    total;
+
+
+  document
+    .getElementById("pending")
+    .textContent =
+    pending;
+
+
+  document
+    .getElementById("approved")
+    .textContent =
+    approved;
+
 
   if(!data.length){
 
@@ -541,20 +732,29 @@ async function loadApplications(){
       "No applications yet." +
       "</div>";
 
+
     return;
   }
 
+
   container.innerHTML = "";
+
 
   for(const app of data){
 
     let screenshotHTML = "";
 
+
+    /*
+       Show screenshot if the application
+       contains a screenshot path.
+    */
+
     if(app.screenshot_url){
 
       const {
-        data: signedData,
-        error: signedError
+        data:signedData,
+        error:signedError
       } =
       await supabaseClient
         .storage
@@ -564,21 +764,31 @@ async function loadApplications(){
           3600
         );
 
-      if(!signedError && signedData){
+
+      if(
+        !signedError &&
+        signedData
+      ){
 
         screenshotHTML = `
 
           <p>
-            <strong>Profile Screenshot:</strong>
+            <strong>
+              Profile Screenshot:
+            </strong>
           </p>
 
           <a
-            href="${escapeHtml(signedData.signedUrl)}"
+            href="${escapeHtml(
+              signedData.signedUrl
+            )}"
             target="_blank">
 
             <img
               class="screenshot"
-              src="${escapeHtml(signedData.signedUrl)}"
+              src="${escapeHtml(
+                signedData.signedUrl
+              )}"
               alt="Player screenshot">
 
           </a>
@@ -587,65 +797,160 @@ async function loadApplications(){
       }
     }
 
-    const card =
-      document.createElement("div");
 
-    card.className = "application";
+    const card =
+      document
+        .createElement("div");
+
+
+    card.className =
+      "application";
+
 
     card.innerHTML = `
 
       <h3>
-        ⚔️ ${escapeHtml(app.name || "Unknown")}
+        ⚔️ ${
+          escapeHtml(
+            app.name ||
+            "Unknown"
+          )
+        }
       </h3>
 
-      <p>
-        <strong>Application ID:</strong>
-        ${escapeHtml(app.application_id || "N/A")}
-      </p>
 
       <p>
-        <strong>UID:</strong>
-        ${escapeHtml(app.uid || "N/A")}
+        <strong>
+          Application ID:
+        </strong>
+
+        ${
+          escapeHtml(
+            app.application_id ||
+            "N/A"
+          )
+        }
       </p>
 
-      <p>
-        <strong>Contact:</strong>
-        ${escapeHtml(app.contact || "N/A")}
-      </p>
 
       <p>
-        <strong>Gender:</strong>
-        ${escapeHtml(app.gender || "N/A")}
+        <strong>
+          UID:
+        </strong>
+
+        ${
+          escapeHtml(
+            app.uid ||
+            "N/A"
+          )
+        }
       </p>
 
-      <p>
-        <strong>Role:</strong>
-        ${escapeHtml(app.role || "N/A")}
-      </p>
 
       <p>
-        <strong>Rank:</strong>
-        ${escapeHtml(app.rank || "N/A")}
+        <strong>
+          Contact:
+        </strong>
+
+        ${
+          escapeHtml(
+            app.contact ||
+            "N/A"
+          )
+        }
       </p>
 
-      <p>
-        <strong>Headshot:</strong>
-        ${escapeHtml(app.headshot || "N/A")}
-      </p>
 
       <p>
-        <strong>Reason:</strong>
-        ${escapeHtml(app.reason || "N/A")}
+        <strong>
+          Gender:
+        </strong>
+
+        ${
+          escapeHtml(
+            app.gender ||
+            "N/A"
+          )
+        }
       </p>
+
+
+      <p>
+        <strong>
+          Role:
+        </strong>
+
+        ${
+          escapeHtml(
+            app.role ||
+            "N/A"
+          )
+        }
+      </p>
+
+
+      <p>
+        <strong>
+          Rank:
+        </strong>
+
+        ${
+          escapeHtml(
+            app.rank ||
+            "N/A"
+          )
+        }
+      </p>
+
+
+      <p>
+        <strong>
+          Headshot:
+        </strong>
+
+        ${
+          escapeHtml(
+            app.headshot ||
+            "N/A"
+          )
+        }
+      </p>
+
+
+      <p>
+        <strong>
+          Reason:
+        </strong>
+
+        ${
+          escapeHtml(
+            app.reason ||
+            "N/A"
+          )
+        }
+      </p>
+
 
       <div class="status">
+
         Status:
+
         <strong>
-          ${escapeHtml(app.status || "Pending")}
+
+          ${
+            escapeHtml(
+              app.status ||
+              "Pending"
+            )
+          }
+
         </strong>
+
       </div>
 
+
       ${screenshotHTML}
+
 
       <div class="actions">
 
@@ -659,6 +964,7 @@ async function loadApplications(){
           ✅ APPROVE
 
         </button>
+
 
         <button
           class="reject"
@@ -675,44 +981,57 @@ async function loadApplications(){
 
     `;
 
+
     container.appendChild(card);
   }
 }
 
 
-/* =========================================
-   UPDATE STATUS
-   ========================================= */
+/* =====================================================
+   UPDATE APPLICATION STATUS
+===================================================== */
 
-async function updateStatus(id,status){
+async function updateStatus(
+  id,
+  status
+){
 
-  const { error } =
-    await supabaseClient
-      .from("applications")
-      .update({
-        status: status
-      })
-      .eq("id", id);
+  const {
+    error
+  } =
+  await supabaseClient
+    .from("applications")
+    .update({
+      status:status
+    })
+    .eq(
+      "id",
+      id
+    );
+
 
   if(error){
 
     console.error(error);
+
 
     alert(
       "Could not update application:\n\n" +
       error.message
     );
 
+
     return;
   }
+
 
   await loadApplications();
 }
 
 
-/* =========================================
+/* =====================================================
    LOGOUT
-   ========================================= */
+===================================================== */
 
 async function logout(){
 
@@ -720,44 +1039,63 @@ async function logout(){
     .auth
     .signOut();
 
+
   showLogin();
 }
 
 
-/* =========================================
+/* =====================================================
    ESCAPE HTML
-   ========================================= */
+===================================================== */
 
 function escapeHtml(value){
 
   return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 }
 
 
-/* =========================================
+/* =====================================================
    CHECK EXISTING SESSION
-   ========================================= */
+===================================================== */
 
-supabaseClient.auth
+supabaseClient
+  .auth
   .getSession()
-  .then(async ({data}) => {
+  .then(
+    async ({data}) => {
 
-    if(data.session){
+      if(data.session){
 
-      await checkAdmin();
+        await checkAdmin();
 
-    }else{
+      }else{
 
-      showLogin();
+        showLogin();
+
+      }
 
     }
-
-  });
+  );
 
 </script>
 
