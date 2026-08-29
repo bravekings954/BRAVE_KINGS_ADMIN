@@ -8,11 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+*{box-sizing:border-box;margin:0;padding:0}
 
 body{
   font-family:Arial,Helvetica,sans-serif;
@@ -21,15 +17,13 @@ body{
 }
 
 header{
+  padding:25px 15px;
+  text-align:center;
   background:#111;
   border-bottom:1px solid #292929;
-  padding:22px 15px;
-  text-align:center;
 }
 
-header h1{
-  color:#ff6a00;
-}
+header h1{color:#ff6a00}
 
 .container{
   width:92%;
@@ -49,9 +43,7 @@ header h1{
   margin:60px auto;
 }
 
-h2{
-  margin-bottom:20px;
-}
+h2{margin-bottom:20px}
 
 label{
   display:block;
@@ -70,9 +62,7 @@ input{
   outline:none;
 }
 
-input:focus{
-  border-color:#ff6a00;
-}
+input:focus{border-color:#ff6a00}
 
 button{
   border:0;
@@ -84,9 +74,7 @@ button{
   cursor:pointer;
 }
 
-button:disabled{
-  opacity:.6;
-}
+button:disabled{opacity:.6}
 
 .login-button{
   width:100%;
@@ -99,9 +87,7 @@ button:disabled{
   line-height:1.5;
 }
 
-.dashboard{
-  display:none;
-}
+.dashboard{display:none}
 
 .topbar{
   display:flex;
@@ -112,9 +98,7 @@ button:disabled{
   margin-bottom:25px;
 }
 
-.logout{
-  background:#333;
-}
+.logout{background:#333}
 
 .stats{
   display:grid;
@@ -175,13 +159,8 @@ button:disabled{
   margin-top:18px;
 }
 
-.approve{
-  background:#16803c;
-}
-
-.reject{
-  background:#a83232;
-}
+.approve{background:#16803c}
+.reject{background:#a83232}
 
 .screenshot{
   display:block;
@@ -200,18 +179,11 @@ button:disabled{
 }
 
 @media(max-width:700px){
+  .stats{grid-template-columns:1fr}
 
-  .stats{
-    grid-template-columns:1fr;
-  }
+  .topbar{align-items:stretch}
 
-  .topbar{
-    align-items:stretch;
-  }
-
-  .topbar button{
-    width:100%;
-  }
+  .topbar button{width:100%}
 }
 </style>
 </head>
@@ -231,27 +203,23 @@ button:disabled{
 
     <h2>👑 Admin Login</h2>
 
-    <label for="email">
-      Email
-    </label>
+    <label for="email">Email</label>
 
     <input
       id="email"
       type="email"
       autocomplete="username"
-      placeholder="Admin email">
+      placeholder="Admin email"
+    >
 
-
-    <label for="password">
-      Password
-    </label>
+    <label for="password">Password</label>
 
     <input
       id="password"
       type="password"
       autocomplete="current-password"
-      placeholder="Admin password">
-
+      placeholder="Admin password"
+    >
 
     <button
       id="loginButton"
@@ -262,11 +230,7 @@ button:disabled{
 
     </button>
 
-
-    <div
-      id="loginError"
-      class="error">
-    </div>
+    <div id="loginError" class="error"></div>
 
   </div>
 
@@ -275,9 +239,7 @@ button:disabled{
 
 <!-- DASHBOARD -->
 
-<div
-  class="dashboard"
-  id="dashboard">
+<div class="dashboard" id="dashboard">
 
   <div class="container">
 
@@ -307,47 +269,18 @@ button:disabled{
     <div class="stats">
 
       <div class="stat">
-
-        <div
-          class="stat-number"
-          id="total">
-
-          0
-
-        </div>
-
+        <div class="stat-number" id="total">0</div>
         <p>Total</p>
-
       </div>
 
-
       <div class="stat">
-
-        <div
-          class="stat-number"
-          id="pending">
-
-          0
-
-        </div>
-
+        <div class="stat-number" id="pending">0</div>
         <p>Pending</p>
-
       </div>
 
-
       <div class="stat">
-
-        <div
-          class="stat-number"
-          id="approved">
-
-          0
-
-        </div>
-
+        <div class="stat-number" id="approved">0</div>
         <p>Approved</p>
-
       </div>
 
     </div>
@@ -356,7 +289,6 @@ button:disabled{
     <div
       class="applications"
       id="applications">
-
     </div>
 
   </div>
@@ -372,10 +304,9 @@ button:disabled{
 
 const SUPABASE_URL =
 "https://enhoicmhdhwksgwlveou.supabase.co";
-  
+
 const SUPABASE_KEY =
 "sb_publishable_FhqemTWZw6K5w-vO6bze8g_-hm117f-";
-
 
 const supabaseClient =
 window.supabase.createClient(
@@ -391,27 +322,18 @@ window.supabase.createClient(
 async function login(){
 
   const email =
-    document
-      .getElementById("email")
-      .value
-      .trim();
+    document.getElementById("email").value.trim();
 
   const password =
-    document
-      .getElementById("password")
-      .value;
+    document.getElementById("password").value;
 
   const errorBox =
-    document
-      .getElementById("loginError");
+    document.getElementById("loginError");
 
   const button =
-    document
-      .getElementById("loginButton");
-
+    document.getElementById("loginButton");
 
   errorBox.textContent = "";
-
 
   if(!email || !password){
 
@@ -421,20 +343,16 @@ async function login(){
     return;
   }
 
-
   button.disabled = true;
   button.textContent = "LOGGING IN...";
-
 
   const { data, error } =
     await supabaseClient.auth.signInWithPassword({
 
-      email:email,
-
-      password:password
+      email: email,
+      password: password
 
     });
-
 
   if(error){
 
@@ -450,7 +368,6 @@ async function login(){
     return;
   }
 
-
   if(!data.user){
 
     errorBox.textContent =
@@ -462,9 +379,7 @@ async function login(){
     return;
   }
 
-
   await checkAdmin();
-
 
   button.disabled = false;
   button.textContent = "LOGIN";
@@ -482,22 +397,18 @@ async function checkAdmin(){
   } =
     await supabaseClient.auth.getUser();
 
-
   if(!user){
 
     showLogin();
-
     return false;
   }
-
 
   const { data: admin, error } =
     await supabaseClient
       .from("admins")
-      .select("user_id")
-      .eq("user_id",user.id)
+      .select("*")
+      .eq("user_id", user.id)
       .maybeSingle();
-
 
   if(error){
 
@@ -515,7 +426,6 @@ async function checkAdmin(){
     return false;
   }
 
-
   if(!admin){
 
     alert(
@@ -528,7 +438,6 @@ async function checkAdmin(){
 
     return false;
   }
-
 
   showDashboard();
 
@@ -544,13 +453,11 @@ function showLogin(){
 
   document
     .getElementById("loginSection")
-    .style.display =
-    "block";
+    .style.display = "block";
 
   document
     .getElementById("dashboard")
-    .style.display =
-    "none";
+    .style.display = "none";
 }
 
 
@@ -562,14 +469,11 @@ async function showDashboard(){
 
   document
     .getElementById("loginSection")
-    .style.display =
-    "none";
+    .style.display = "none";
 
   document
     .getElementById("dashboard")
-    .style.display =
-    "block";
-
+    .style.display = "block";
 
   await loadApplications();
 }
@@ -582,24 +486,20 @@ async function showDashboard(){
 async function loadApplications(){
 
   const container =
-    document
-      .getElementById("applications");
-
+    document.getElementById("applications");
 
   container.innerHTML =
     "<div class='loading'>" +
     "Loading applications..." +
     "</div>";
 
-
   const { data, error } =
     await supabaseClient
       .from("applications")
       .select("*")
-      .order("created_at",{
+      .order("created_at", {
         ascending:false
       });
-
 
   if(error){
 
@@ -614,40 +514,25 @@ async function loadApplications(){
     return;
   }
 
-
-  const total =
-    data.length;
-
+  const total = data.length;
 
   const pending =
     data.filter(
-      item => item.status === "Pending"
+      item =>
+        (item.status || "Pending")
+        .toLowerCase() === "pending"
     ).length;
-
 
   const approved =
     data.filter(
-      item => item.status === "Approved"
+      item =>
+        (item.status || "")
+        .toLowerCase() === "approved"
     ).length;
 
-
-  document
-    .getElementById("total")
-    .textContent =
-    total;
-
-
-  document
-    .getElementById("pending")
-    .textContent =
-    pending;
-
-
-  document
-    .getElementById("approved")
-    .textContent =
-    approved;
-
+  document.getElementById("total").textContent = total;
+  document.getElementById("pending").textContent = pending;
+  document.getElementById("approved").textContent = approved;
 
   if(!data.length){
 
@@ -659,14 +544,11 @@ async function loadApplications(){
     return;
   }
 
-
   container.innerHTML = "";
-
 
   for(const app of data){
 
     let screenshotHTML = "";
-
 
     if(app.screenshot_url){
 
@@ -682,12 +564,7 @@ async function loadApplications(){
           3600
         );
 
-
       if(!signedError && signedData){
-
-        const imageUrl =
-          signedData.signedUrl;
-
 
         screenshotHTML = `
 
@@ -696,12 +573,12 @@ async function loadApplications(){
           </p>
 
           <a
-            href="${escapeHtml(imageUrl)}"
+            href="${escapeHtml(signedData.signedUrl)}"
             target="_blank">
 
             <img
               class="screenshot"
-              src="${escapeHtml(imageUrl)}"
+              src="${escapeHtml(signedData.signedUrl)}"
               alt="Player screenshot">
 
           </a>
@@ -710,14 +587,10 @@ async function loadApplications(){
       }
     }
 
-
     const card =
       document.createElement("div");
 
-
-    card.className =
-      "application";
-
+    card.className = "application";
 
     card.innerHTML = `
 
@@ -725,49 +598,54 @@ async function loadApplications(){
         ⚔️ ${escapeHtml(app.name || "Unknown")}
       </h3>
 
-
       <p>
         <strong>Application ID:</strong>
         ${escapeHtml(app.application_id || "N/A")}
       </p>
-
 
       <p>
         <strong>UID:</strong>
         ${escapeHtml(app.uid || "N/A")}
       </p>
 
-
       <p>
         <strong>Contact:</strong>
         ${escapeHtml(app.contact || "N/A")}
       </p>
 
+      <p>
+        <strong>Gender:</strong>
+        ${escapeHtml(app.gender || "N/A")}
+      </p>
 
       <p>
         <strong>Role:</strong>
         ${escapeHtml(app.role || "N/A")}
       </p>
 
+      <p>
+        <strong>Rank:</strong>
+        ${escapeHtml(app.rank || "N/A")}
+      </p>
+
+      <p>
+        <strong>Headshot:</strong>
+        ${escapeHtml(app.headshot || "N/A")}
+      </p>
 
       <p>
         <strong>Reason:</strong>
         ${escapeHtml(app.reason || "N/A")}
       </p>
 
-
       <div class="status">
-
         Status:
         <strong>
           ${escapeHtml(app.status || "Pending")}
         </strong>
-
       </div>
 
-
       ${screenshotHTML}
-
 
       <div class="actions">
 
@@ -781,7 +659,6 @@ async function loadApplications(){
           ✅ APPROVE
 
         </button>
-
 
         <button
           class="reject"
@@ -798,9 +675,7 @@ async function loadApplications(){
 
     `;
 
-
     container.appendChild(card);
-
   }
 }
 
@@ -809,19 +684,15 @@ async function loadApplications(){
    UPDATE STATUS
    ========================================= */
 
-async function updateStatus(
-  id,
-  status
-){
+async function updateStatus(id,status){
 
   const { error } =
     await supabaseClient
       .from("applications")
       .update({
-        status:status
+        status: status
       })
-      .eq("id",id);
-
+      .eq("id", id);
 
   if(error){
 
@@ -834,7 +705,6 @@ async function updateStatus(
 
     return;
   }
-
 
   await loadApplications();
 }
